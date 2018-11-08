@@ -1,0 +1,158 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| fengfengai         |
+| fengfnegai3        |
+| fngfengai          |
+| gouwuche           |
+| information_schema |
+| mijianan           |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> use mijianan;
+Database changed
+mysql> create table gouwuche1(id int(11) auto_increment primary key,name varchar(20) not null);
+Query OK, 0 rows affected (0.61 sec)
+
+mysql> desc gouwuche1;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | NO   |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> alter table gouwuche1 add xihuan varchar(1) not null;
+Query OK, 0 rows affected (0.55 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table gouwuche1 add zhekoutixing varchar(1) not null;
+Query OK, 0 rows affected (0.51 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table gouwuche1 add shuangshiyiyuanwang vaechar(1) not null;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'vaechar(1) not null' at line 1
+mysql> alter table gouwuche1 add shuangshiyiyuanwang varchar(1) not null;
+Query OK, 0 rows affected (0.38 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc gouwuche1;
++---------------------+-------------+------+-----+---------+----------------+
+| Field               | Type        | Null | Key | Default | Extra          |
++---------------------+-------------+------+-----+---------+----------------+
+| id                  | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name                | varchar(20) | NO   |     | NULL    |                |
+| xihuan              | varchar(1)  | NO   |     | NULL    |                |
+| zhekoutixing        | varchar(1)  | NO   |     | NULL    |                |
+| shuangshiyiyuanwang | varchar(1)  | NO   |     | NULL    |                |
++---------------------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into gouwuche1(id,name,xihuan,zhekoutixing,shuangshiyiyuanwang) values(1,'Tina','1','1','1');
+Query OK, 1 row affected (0.25 sec)
+
+mysql> select * from gouwuche1;
++----+------+--------+--------------+---------------------+
+| id | name | xihuan | zhekoutixing | shuangshiyiyuanwang |
++----+------+--------+--------------+---------------------+
+|  1 | Tina | 1      | 1            | 1                   |
++----+------+--------+--------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> insert into gouwuche(id,name,xihuan,zhekoutixing,shuangshiyiyuanwang) values(2,'Jack','1','1','0'),(3,'Lily','1','0','0'),(4,'Jacky','0','0','0');
+ERROR 1062 (23000): Duplicate entry '2' for key 'PRIMARY'
+mysql> insert into gouwuche1(id,name,xihuan,zhekoutixing,shuangshiyiyuanwang) values(2,'Jack','1','1','0'),(3,'Lily','1','0','0'),(4,'Jacky','0','0','0');
+Query OK, 3 rows affected (0.26 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang |
++----+-------+--------+--------------+---------------------+
+|  1 | Tina  | 1      | 1            | 1                   |
+|  2 | Jack  | 1      | 1            | 0                   |
+|  3 | Lily  | 1      | 0            | 0                   |
+|  4 | Jacky | 0      | 0            | 0                   |
++----+-------+--------+--------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> update gouwuche set shuangshiyiyuanwang=0 where id=4;
+Query OK, 1 row affected (0.32 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang |
++----+-------+--------+--------------+---------------------+
+|  1 | Tina  | 1      | 1            | 1                   |
+|  2 | Jack  | 1      | 1            | 0                   |
+|  3 | Lily  | 1      | 0            | 0                   |
+|  4 | Jacky | 0      | 0            | 0                   |
++----+-------+--------+--------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> update gouwuche set shuangshiyiyuanwang=1 where id=4;
+Query OK, 1 row affected (0.14 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang |
++----+-------+--------+--------------+---------------------+
+|  1 | Tina  | 1      | 1            | 1                   |
+|  2 | Jack  | 1      | 1            | 0                   |
+|  3 | Lily  | 1      | 0            | 0                   |
+|  4 | Jacky | 0      | 0            | 0                   |
++----+-------+--------+--------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> update gouwuche1 set shuangshiyiyuanwang=1 where id=4;
+Query OK, 1 row affected (0.20 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang |
++----+-------+--------+--------------+---------------------+
+|  1 | Tina  | 1      | 1            | 1                   |
+|  2 | Jack  | 1      | 1            | 0                   |
+|  3 | Lily  | 1      | 0            | 0                   |
+|  4 | Jacky | 0      | 0            | 1                   |
++----+-------+--------+--------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> alter table gouwuche1 add iddelete varchar(1) not null;
+Query OK, 0 rows affected (0.49 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+----------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang | iddelete |
++----+-------+--------+--------------+---------------------+----------+
+|  1 | Tina  | 1      | 1            | 1                   |          |
+|  2 | Jack  | 1      | 1            | 0                   |          |
+|  3 | Lily  | 1      | 0            | 0                   |          |
+|  4 | Jacky | 0      | 0            | 1                   |          |
++----+-------+--------+--------------+---------------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> update gouwuche1 set iddelete=0 where id=3;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from gouwuche1;
++----+-------+--------+--------------+---------------------+----------+
+| id | name  | xihuan | zhekoutixing | shuangshiyiyuanwang | iddelete |
++----+-------+--------+--------------+---------------------+----------+
+|  1 | Tina  | 1      | 1            | 1                   |          |
+|  2 | Jack  | 1      | 1            | 0                   |          |
+|  3 | Lily  | 1      | 0            | 0                   | 0        |
+|  4 | Jacky | 0      | 0            | 1                   |          |
++----+-------+--------+--------------+---------------------+----------+
+4 rows in set (0.00 sec)
