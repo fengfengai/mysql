@@ -1,111 +1,84 @@
 mysql> use mijianan;
 Database changed
-mysql> create table shoucangbiao(id int auto_increment primary key,name varchar(20) not null unique,wupin varchar(20) not null,shoucang int not null);
-Query OK, 0 rows affected (0.89 sec)
+mysql> create table film(moviename varchar(20) not null,year int not null,director varchar(20) not null,score varchar(10) not null);
+Query OK, 0 rows affected (0.54 sec)
 
-mysql> desc shoucangbiao;
-+----------+-------------+------+-----+---------+----------------+
-| Field    | Type        | Null | Key | Default | Extra          |
-+----------+-------------+------+-----+---------+----------------+
-| id       | int(11)     | NO   | PRI | NULL    | auto_increment |
-| name     | varchar(20) | NO   | UNI | NULL    |                |
-| wupin    | varchar(20) | NO   |     | NULL    |                |
-| shoucang | int(11)     | NO   |     | NULL    |                |
-+----------+-------------+------+-----+---------+----------------+
-4 rows in set (0.00 sec)
-
-mysql> insert into shoucang (id,name,wupin,shoucang) values(1,'mjn','phone',1),(2,'hxj','cup',1),(3,'zwj','char',0),(4,'ch','watch',0);
-ERROR 1054 (42S22): Unknown column 'wupin' in 'field list'
-mysql> insert into shoucangbiao (id,name,wupin,shoucang) values(1,'mjn','phone',1),(2,'hxj','cup',1),(3,'zwj','char',0),(4,'ch','watch',0);
-Query OK, 4 rows affected (0.27 sec)
+mysql> insert into film(moviename,year,director,score) values('PengRanXingDong',2015,'ChenGuohui','4.2'),('ZhiZiHuaKai',2015,'HeJiong','4.1'),('DongWuShiJie',2018,'HanYan','7.3'),('LaoPaoEr',2015,'GuanHu','7.8');
+Query OK, 4 rows affected (0.28 sec)
 Records: 4  Duplicates: 0  Warnings: 0
 
-mysql> select * from shoucangbiao;
-+----+------+-------+----------+
-| id | name | wupin | shoucang |
-+----+------+-------+----------+
-|  1 | mjn  | phone |        1 |
-|  2 | hxj  | cup   |        1 |
-|  3 | zwj  | char  |        0 |
-|  4 | ch   | watch |        0 |
-+----+------+-------+----------+
+mysql> select * from film;
++-----------------+------+------------+-------+
+| moviename       | year | director   | score |
++-----------------+------+------------+-------+
+| PengRanXingDong | 2015 | ChenGuohui | 4.2   |
+| ZhiZiHuaKai     | 2015 | HeJiong    | 4.1   |
+| DongWuShiJie    | 2018 | HanYan     | 7.3   |
+| LaoPaoEr        | 2015 | GuanHu     | 7.8   |
++-----------------+------+------------+-------+
 4 rows in set (0.00 sec)
 
-mysql> select * from shoucangbiao where id=1;
-+----+------+-------+----------+
-| id | name | wupin | shoucang |
-+----+------+-------+----------+
-|  1 | mjn  | phone |        1 |
-+----+------+-------+----------+
+mysql> select moviename from film where moviename like'%u%'£»
+    ->
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '£»' at line 1
+mysql> select moviename from film where moviename like'%u%';
++--------------+
+| moviename    |
++--------------+
+| ZhiZiHuaKai  |
+| DongWuShiJie |
++--------------+
+2 rows in set (0.00 sec)
+
+mysql> select director from film where director like'Han%';
++----------+
+| director |
++----------+
+| HanYan   |
++----------+
 1 row in set (0.00 sec)
 
-mysql> select * from shoucangbiao where wupin=phone;
-ERROR 1054 (42S22): Unknown column 'phone' in 'where clause'
-mysql> select * from shoucangbiao where wupin='phone';
-+----+------+-------+----------+
-| id | name | wupin | shoucang |
-+----+------+-------+----------+
-|  1 | mjn  | phone |        1 |
-+----+------+-------+----------+
-1 row in set (0.00 sec)
+mysql> select moviename from film where year=2015;
++-----------------+
+| moviename       |
++-----------------+
+| PengRanXingDong |
+| ZhiZiHuaKai     |
+| LaoPaoEr        |
++-----------------+
+3 rows in set (0.00 sec)
 
-mysql> select wupin from shoucangbiao where wupin='cup';
-+-------+
-| wupin |
-+-------+
-| cup   |
-+-------+
-1 row in set (0.00 sec)
-
-mysql> alter table shoucangbiao add DT datetime;
-Query OK, 0 rows affected (0.50 sec)
-Records: 0  Duplicates: 0  Warnings: 0
-
-mysql> insert into shoucangbiao(DT) values(now()),(now()),(now()),(now());
-ERROR 1364 (HY000): Field 'name' doesn't have a default value
-mysql> select * from shoucangbiao;
-+----+------+-------+----------+------+
-| id | name | wupin | shoucang | DT   |
-+----+------+-------+----------+------+
-|  1 | mjn  | phone |        1 | NULL |
-|  2 | hxj  | cup   |        1 | NULL |
-|  3 | zwj  | char  |        0 | NULL |
-|  4 | ch   | watch |        0 | NULL |
-+----+------+-------+----------+------+
+mysql> select max(score) from film group by moviename;
++------------+
+| max(score) |
++------------+
+| 4.2        |
+| 4.1        |
+| 7.3        |
+| 7.8        |
++------------+
 4 rows in set (0.00 sec)
 
-mysql> alter table shoucangbiao drop DT;
-Query OK, 0 rows affected (1.62 sec)
-Records: 0  Duplicates: 0  Warnings: 0
+mysql> select max(score) from film;
++------------+
+| max(score) |
++------------+
+| 7.8        |
++------------+
+1 row in set (0.00 sec)
+mysql> select moviename from film where score=(select max(score) from film);
++-----------+
+| moviename |
++-----------+
+| LaoPaoEr  |
++-----------+
+1 row in set (0.00 sec)
 
-mysql> alter table shoucangbiao add DT timestamp cdefault current_timestamp;
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cdefault current_timestamp' at line 1
-mysql> alter table shoucangbiao add DT timestamp default current_timestamp;
-Query OK, 0 rows affected (0.39 sec)
-Records: 0  Duplicates: 0  Warnings: 0
-
-mysql> select * from shoucangbiao;
-+----+------+-------+----------+---------------------+
-| id | name | wupin | shoucang | DT                  |
-+----+------+-------+----------+---------------------+
-|  1 | mjn  | phone |        1 | 2018-11-12 22:44:49 |
-|  2 | hxj  | cup   |        1 | 2018-11-12 22:44:49 |
-|  3 | zwj  | char  |        0 | 2018-11-12 22:44:49 |
-|  4 | ch   | watch |        0 | 2018-11-12 22:44:49 |
-+----+------+-------+----------+---------------------+
-4 rows in set (0.00 sec)
-
-mysql> insert into shoucangbiao (id,name,wupin,shoucang) values(5,'hhh','kkk',1);
-Query OK, 1 row affected (0.14 sec)
-
-mysql> select * from shoucangbiao;
-+----+------+-------+----------+---------------------+
-| id | name | wupin | shoucang | DT                  |
-+----+------+-------+----------+---------------------+
-|  1 | mjn  | phone |        1 | 2018-11-12 22:44:49 |
-|  2 | hxj  | cup   |        1 | 2018-11-12 22:44:49 |
-|  3 | zwj  | char  |        0 | 2018-11-12 22:44:49 |
-|  4 | ch   | watch |        0 | 2018-11-12 22:44:49 |
-|  5 | hhh  | kkk   |        1 | 2018-11-12 22:50:15 |
-+----+------+-------+----------+---------------------+
-5 rows in set (0.00 sec)
+mysql> select moviename,score from film where score=(select max(score) from film);
++-----------+-------+
+| moviename | score |
++-----------+-------+
+| LaoPaoEr  | 7.8   |
++-----------+-------+
+1 row in set (0.00 sec)
