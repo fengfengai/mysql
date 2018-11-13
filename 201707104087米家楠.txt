@@ -1,0 +1,84 @@
+mysql> use mijianan;
+Database changed
+mysql> create table film(moviename varchar(20) not null,year int not null,director varchar(20) not null,score varchar(10) not null);
+Query OK, 0 rows affected (0.54 sec)
+
+mysql> insert into film(moviename,year,director,score) values('PengRanXingDong',2015,'ChenGuohui','4.2'),('ZhiZiHuaKai',2015,'HeJiong','4.1'),('DongWuShiJie',2018,'HanYan','7.3'),('LaoPaoEr',2015,'GuanHu','7.8');
+Query OK, 4 rows affected (0.28 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from film;
++-----------------+------+------------+-------+
+| moviename       | year | director   | score |
++-----------------+------+------------+-------+
+| PengRanXingDong | 2015 | ChenGuohui | 4.2   |
+| ZhiZiHuaKai     | 2015 | HeJiong    | 4.1   |
+| DongWuShiJie    | 2018 | HanYan     | 7.3   |
+| LaoPaoEr        | 2015 | GuanHu     | 7.8   |
++-----------------+------+------------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select moviename from film where moviename like'%u%'£»
+    ->
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '£»' at line 1
+mysql> select moviename from film where moviename like'%u%';
++--------------+
+| moviename    |
++--------------+
+| ZhiZiHuaKai  |
+| DongWuShiJie |
++--------------+
+2 rows in set (0.00 sec)
+
+mysql> select director from film where director like'Han%';
++----------+
+| director |
++----------+
+| HanYan   |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select moviename from film where year=2015;
++-----------------+
+| moviename       |
++-----------------+
+| PengRanXingDong |
+| ZhiZiHuaKai     |
+| LaoPaoEr        |
++-----------------+
+3 rows in set (0.00 sec)
+
+mysql> select max(score) from film group by moviename;
++------------+
+| max(score) |
++------------+
+| 4.2        |
+| 4.1        |
+| 7.3        |
+| 7.8        |
++------------+
+4 rows in set (0.00 sec)
+
+mysql> select max(score) from film;
++------------+
+| max(score) |
++------------+
+| 7.8        |
++------------+
+1 row in set (0.00 sec)
+mysql> select moviename from film where score=(select max(score) from film);
++-----------+
+| moviename |
++-----------+
+| LaoPaoEr  |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> select moviename,score from film where score=(select max(score) from film);
++-----------+-------+
+| moviename | score |
++-----------+-------+
+| LaoPaoEr  | 7.8   |
++-----------+-------+
+1 row in set (0.00 sec)
