@@ -1,84 +1,102 @@
-mysql> use mijianan;
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| fengfengai         |
+| fengfnegai3        |
+| fngfengai          |
+| gouwuche           |
+| information_schema |
+| mijianan           |
+| mysql              |
+| performance_schema |
+| suoyin             |
+| sys                |
++--------------------+
+10 rows in set (0.00 sec)
+
+mysql> use fngfengai;
 Database changed
-mysql> create table film(moviename varchar(20) not null,year int not null,director varchar(20) not null,score varchar(10) not null);
-Query OK, 0 rows affected (0.54 sec)
+mysql> create table userbiao(user_id smallint unsigned not null auto_increment,user_password int(30) unsigned not null,isdelete int not null default 0,primary key (user_id))engine=innodb default charset=utf8;
+Query OK, 0 rows affected, 1 warning (0.59 sec)
 
-mysql> insert into film(moviename,year,director,score) values('PengRanXingDong',2015,'ChenGuohui','4.2'),('ZhiZiHuaKai',2015,'HeJiong','4.1'),('DongWuShiJie',2018,'HanYan','7.3'),('LaoPaoEr',2015,'GuanHu','7.8');
-Query OK, 4 rows affected (0.28 sec)
-Records: 4  Duplicates: 0  Warnings: 0
+mysql> create table equipment(equipment_id smallint unsigned not null auto_increment primary key,equipment_name varchar(50) not null,equipment_price int not null,user_id smallint unsigned not null,buyingtime timestamp not null default current_timestamp on update current_timestamp,key idx_fk_user_id(user_id),constraint fk_equipment_userbiao foreign key(user_id) references userbiao(user_id) on delete restrict on update cascade)engine=innodb default charset=utf8;
+Query OK, 0 rows affected, 1 warning (0.49 sec)
 
-mysql> select * from film;
-+-----------------+------+------------+-------+
-| moviename       | year | director   | score |
-+-----------------+------+------------+-------+
-| PengRanXingDong | 2015 | ChenGuohui | 4.2   |
-| ZhiZiHuaKai     | 2015 | HeJiong    | 4.1   |
-| DongWuShiJie    | 2018 | HanYan     | 7.3   |
-| LaoPaoEr        | 2015 | GuanHu     | 7.8   |
-+-----------------+------+------------+-------+
-4 rows in set (0.00 sec)
+mysql> update userbiao set user_password=md5(user_password);
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
 
-mysql> select moviename from film where moviename like'%u%'£»
-    ->
-    -> ;
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '£»' at line 1
-mysql> select moviename from film where moviename like'%u%';
-+--------------+
-| moviename    |
-+--------------+
-| ZhiZiHuaKai  |
-| DongWuShiJie |
-+--------------+
-2 rows in set (0.00 sec)
+mysql> insert into userbiao(user_id,user_password,^C
+mysql> ;
+ERROR:
+No query specified
 
-mysql> select director from film where director like'Han%';
-+----------+
-| director |
-+----------+
-| HanYan   |
-+----------+
-1 row in set (0.00 sec)
+mysql> insert into userbiao(user_id,user_password,isdelete) values(1234,5689745664,0),(9866,52334665,1),(5235,5632248,0);
+ERROR 1264 (22003): Out of range value for column 'user_password' at row 1
+mysql> insert into userbiao(user_id,user_password,isdelete) values(1234,54,0),(9866,52,1),(5235,56,0);
+Query OK, 3 rows affected (0.19 sec)
+Records: 3  Duplicates: 0  Warnings: 0
 
-mysql> select moviename from film where year=2015;
-+-----------------+
-| moviename       |
-+-----------------+
-| PengRanXingDong |
-| ZhiZiHuaKai     |
-| LaoPaoEr        |
-+-----------------+
+mysql> select * from userbiao;
++---------+---------------+----------+
+| user_id | user_password | isdelete |
++---------+---------------+----------+
+|    1234 |            54 |        0 |
+|    5235 |            56 |        0 |
+|    9866 |            52 |        1 |
++---------+---------------+----------+
 3 rows in set (0.00 sec)
 
-mysql> select max(score) from film group by moviename;
-+------------+
-| max(score) |
-+------------+
-| 4.2        |
-| 4.1        |
-| 7.3        |
-| 7.8        |
-+------------+
-4 rows in set (0.00 sec)
+mysql> update userbiao set user_password=md5(user_password);
+ERROR 1366 (HY000): Incorrect integer value: 'a684eceee76fc522773286a895bc8436' for column 'user_password' at row 1
+mysql> insert into equipment(equipment_id,equipment_name,equipment_price,user_id) values(1234,'haha',56,5235),(6548,'kkkk',96,9866);
+Query OK, 2 rows affected (0.25 sec)
+Records: 2  Duplicates: 0  Warnings: 0
 
-mysql> select max(score) from film;
-+------------+
-| max(score) |
-+------------+
-| 7.8        |
-+------------+
-1 row in set (0.00 sec)
-mysql> select moviename from film where score=(select max(score) from film);
-+-----------+
-| moviename |
-+-----------+
-| LaoPaoEr  |
-+-----------+
-1 row in set (0.00 sec)
+mysql> select * from equipment;
++--------------+----------------+-----------------+---------+---------------------+
+| equipment_id | equipment_name | equipment_price | user_id | buyingtime          |
++--------------+----------------+-----------------+---------+---------------------+
+|         1234 | haha           |              56 |    5235 | 2018-11-17 20:51:42 |
+|         6548 | kkkk           |              96 |    9866 | 2018-11-17 20:51:42 |
++--------------+----------------+-----------------+---------+---------------------+
+2 rows in set (0.00 sec)
 
-mysql> select moviename,score from film where score=(select max(score) from film);
-+-----------+-------+
-| moviename | score |
-+-----------+-------+
-| LaoPaoEr  | 7.8   |
-+-----------+-------+
-1 row in set (0.00 sec)
+mysql> update userbiao set user_id=123 where user_id=1234;
+Query OK, 1 row affected (0.25 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * userbiao;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'userbiao' at line 1
+mysql> select * from userbiao;
++---------+---------------+----------+
+| user_id | user_password | isdelete |
++---------+---------------+----------+
+|     123 |            54 |        0 |
+|    5235 |            56 |        0 |
+|    9866 |            52 |        1 |
++---------+---------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from equipment;
++--------------+----------------+-----------------+---------+---------------------+
+| equipment_id | equipment_name | equipment_price | user_id | buyingtime          |
++--------------+----------------+-----------------+---------+---------------------+
+|         1234 | haha           |              56 |    5235 | 2018-11-17 20:51:42 |
+|         6548 | kkkk           |              96 |    9866 | 2018-11-17 20:51:42 |
++--------------+----------------+-----------------+---------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> update userbiao set user_id=123 where user_id=5253;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * from equipment;
++--------------+----------------+-----------------+---------+---------------------+
+| equipment_id | equipment_name | equipment_price | user_id | buyingtime          |
++--------------+----------------+-----------------+---------+---------------------+
+|         1234 | haha           |              56 |    5235 | 2018-11-17 20:51:42 |
+|         6548 | kkkk           |              96 |    9866 | 2018-11-17 20:51:42 |
++--------------+----------------+-----------------+---------+---------------------+
+2 rows in set (0.00 sec)
